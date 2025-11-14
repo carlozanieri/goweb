@@ -1,0 +1,14 @@
+{{ define "header" }}
+<header class="site-header">
+  <div class="container">
+    <h1>{{ .Title }}</h1>
+    <nav>
+      <ul class="nav">
+        {{ range .Nav }}
+        <li><a href="#">{{ . }}</a></li>
+        {{ end }}
+      </ul>
+    </nav>
+  </div>
+</header>
+{{ end }}
