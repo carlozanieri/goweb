@@ -1,0 +1,26 @@
+{{ define "contact" }}
+{{ template "base" . }}
+
+
+<section class="hero">
+  <h2>Contattaci</h2>
+  <p>Compila il modulo qui sotto (non invia niente, è solo un esempio).</p>
+</section>
+
+<section>
+  <form class="contact-form">
+    <label>Nome</label>
+    <input type="text" placeholder="Il tuo nome">
+
+    <label>Email</label>
+    <input type="email" placeholder="email@example.com">
+
+    <label>Messaggio</label>
+    <textarea rows="5" placeholder="Scrivi qui..."></textarea>
+
+    <button type="submit">Invia</button>
+  </form>
+</section>
+
+
+{{ end }}

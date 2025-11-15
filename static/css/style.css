@@ -41,3 +41,29 @@ body {
     padding: 20px;
     border-radius: 6px;
 }
+
+.hero h2 {
+    margin-top: 0;
+}
+.contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.contact-form input,
+.contact-form textarea {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.contact-form button {
+    padding: 10px 14px;
+    border: none;
+    background: #0066cc;
+    color: white;
+    font-weight: bold;
+    border-radius: 4px;
+    cursor: pointer;
+}

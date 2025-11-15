@@ -1,0 +1,13 @@
+CREATE TABLE IF NOT EXISTS menu (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL
+);
+
+-- Creazione tabella SUBMENU
+CREATE TABLE IF NOT EXISTS submenu (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    menu_id INTEGER NOT NULL,
+    title TEXT NOT NULL,
+    FOREIGN KEY(menu_id) REFERENCES menu(id)
+);
+

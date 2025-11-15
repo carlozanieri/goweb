@@ -1,0 +1,23 @@
+{{ define "article" }}
+{{ template "base" . }}
+
+
+<section class="hero">
+  <h2>{{ index .Items 0 }}</h2>
+  <p>
+    ID articolo: <strong>{{ .Title }}</strong>
+  </p>
+</section>
+
+<section>
+  <p>
+    Questo è un esempio di articolo generato dinamicamente tramite l'ID nella URL.
+  </p>
+</section>
+{{ end }}
+
+
+
+Qui usiamo:
+
+{{ index .Items 0 }} per estrarre il contenuto principale dell’articolo

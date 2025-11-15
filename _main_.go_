@@ -1,0 +1,98 @@
+package main
+
+import (
+	"database/sql"
+	"html/template"
+	"log"
+	"net/http"
+	"path/filepath"
+	"time"
+
+	_ "github.com/mattn/go-sqlite3"
+)
+
+type PageData struct {
+	Title string
+	Nav   []string
+	Items []string
+	Year  int
+}
+type Submenu struct {
+	ID      int
+	Codice  string
+	Radice  string
+	Livello int
+	Titolo  string
+	Link    string
+}
+
+type Menus struct {
+	ID       int
+	Codice   string
+	Radice   string
+	Livello  int
+	Titolo   string
+	Link     string
+	Submenus []Submenu
+}
+
+func main() {
+	// carica tutti i template
+	var DB *sql.DB
+
+	tmpl := template.Must(template.ParseGlob(filepath.Join("templates", "*.html")))
+
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		var err error
+		DB, err = sql.Open("sqlite3", "./casabaldini.sqlite")
+		if err != nil {
+			log.Fatal(err)
+		}
+		rows, err := DB.Query("SELECT id, codice,  radice, livello, titolo,link FROM menu WHERE livello=? AND attivo=?", 2, 1)
+
+		if err != nil {
+			return
+		}
+		defer rows.Close()
+		var menus []Menus
+
+		for rows.Next() {
+			var m Menus
+			rows.Scan(&m.ID, &m.Codice, &m.Radice, &m.Livello, &m.Titolo, &m.Link)
+
+			subRows, err := DB.Query("SELECT id, codice,  radice, livello, titolo, link FROM submenu WHERE radice = ?", m.Codice)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			defer rows.Close()
+			for subRows.Next() {
+				var s Submenu
+				subRows.Scan(&s.ID, &s.Codice, &s.Radice, &s.Livello, &s.Titolo, &s.Link)
+				m.Submenus = append(m.Submenus, s)
+			}
+			subRows.Close()
+
+			menus = append(menus, m)
+
+		}
+		data := PageData{
+			Title: "Home — Sito con base.html",
+			Nav:   []string{"Home", "About", "Contact"},
+			Items: []string{"Elemento 1", "Elemento 2", "Elemento 3"},
+			Year:  time.Now().Year(),
+		}
+
+		if err := tmpl.ExecuteTemplate(w, "home", data); err != nil {
+			http.Error(w, "Errore", http.StatusInternalServerError)
+			log.Println("template:", err)
+		}
+	})
+
+	// file statici
+	fs := http.FileServer(http.Dir("./static"))
+	http.Handle("/static/", http.StripPrefix("/static/", fs))
+
+	log.Println("Server su http://localhost:8080")
+	log.Fatal(http.ListenAndServe(":8080", nil))
+}
